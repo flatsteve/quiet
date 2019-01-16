@@ -1,0 +1,14 @@
+{
+  "name": "quiet",
+  "version": "0.1.0",
+  "description": "Shh",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Stephen McCann",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^4.0.1"
+  }
+}
