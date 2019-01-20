@@ -2,9 +2,9 @@ const path = require("path");
 const { app, Tray } = require("electron");
 const player = require("play-sound")((opts = {}));
 
-app.setLoginItemSettings({
-  openAtLogin: true
-});
+// app.setLoginItemSettings({
+//   openAtLogin: true
+// });
 
 app.dock.hide();
 
@@ -37,6 +37,10 @@ app.on("ready", () => {
   });
 
   tray.on("double-click", () => {
+    if (isPlaying) {
+      audio.kill();
+    }
+
     app.quit();
   });
 });

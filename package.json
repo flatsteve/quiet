@@ -3,14 +3,16 @@
   "author": "Stephen McCann",
   "license": "ISC",
   "description": "Menu bar white noise player",
-  "main": "main.js",
+  "main": "app/main.js",
   "version": "0.1.0",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
+    "productName": "Quiet",
     "appId": "com.electron.quiet",
     "mac": {
       "category": "quiet.app.utilities.music"
