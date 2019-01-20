@@ -16,11 +16,7 @@
     "mac": {
       "category": "quiet.app.utilities.music"
     },
-    "files": [
-      "main.js",
-      "assets/*.*",
-      "package.json"
-    ]
+    "asar": false
   },
   "devDependencies": {
     "electron": "^4.0.1",
