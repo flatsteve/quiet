@@ -1,14 +1,35 @@
 const path = require("path");
-const { app, BrowserWindow, Tray } = require("electron");
+const { app, Tray } = require("electron");
+const player = require("play-sound")((opts = {}));
+
+app.dock.hide();
 
 app.on("ready", () => {
-  const icon = "images/cog.png";
-  const iconPath = path.join(__dirname, icon);
+  const playIcon = path.join(__dirname, "assets/play.png");
+  const stopIcon = path.join(__dirname, "assets/stop.png");
 
-  trayIcon = new Tray(iconPath);
-  trayIcon.setToolTip("Hello World");
+  let isPlaying = false;
+  let audio;
 
-  trayIcon.on("click", () => {
-    console.log("CLICK");
+  tray = new Tray(playIcon);
+
+  tray.on("click", () => {
+    if (isPlaying) {
+      audio.kill();
+
+      isPlaying = false;
+      tray.setImage(playIcon);
+    } else {
+      audio = player.play("assets/white-noise.mp3", err => {
+        if (err) throw err;
+      });
+
+      isPlaying = true;
+      tray.setImage(stopIcon);
+    }
+  });
+
+  tray.on("double-click", () => {
+    app.quit();
   });
 });
