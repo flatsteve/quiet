@@ -2,6 +2,10 @@ const path = require("path");
 const { app, Tray } = require("electron");
 const player = require("play-sound")((opts = {}));
 
+app.setLoginItemSettings({
+  openAtLogin: true
+});
+
 app.dock.hide();
 
 app.on("ready", () => {
@@ -20,9 +24,12 @@ app.on("ready", () => {
       isPlaying = false;
       tray.setImage(playIcon);
     } else {
-      audio = player.play("assets/white-noise.mp3", err => {
-        if (err) throw err;
-      });
+      audio = player.play(
+        path.join(__dirname, "assets/white-noise.mp3"),
+        err => {
+          if (err) throw err;
+        }
+      );
 
       isPlaying = true;
       tray.setImage(stopIcon);
