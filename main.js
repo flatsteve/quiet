@@ -1,10 +1,13 @@
 const path = require("path");
 const { app, Tray } = require("electron");
+const isDev = require("electron-is-dev");
+const log = require("electron-log");
 const player = require("play-sound")((opts = {}));
 
-const isDevelopment = process.env.NODE_ENV !== "production";
+log.error("APP RUNNING");
+log.error("IS DEV:", isDev);
 
-if (!isDevelopment) {
+if (!isDev) {
   app.setLoginItemSettings({
     openAtLogin: true
   });
@@ -28,12 +31,11 @@ app.on("ready", () => {
       isPlaying = false;
       tray.setImage(playIcon);
     } else {
-      audio = player.play(
-        path.join(__dirname, "assets/white-noise.mp3"),
-        err => {
-          if (err) throw err;
+      audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
+        if (err) {
+          log.error(err);
         }
-      );
+      });
 
       isPlaying = true;
       tray.setImage(stopIcon);
