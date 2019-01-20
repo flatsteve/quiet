@@ -1,0 +1,12 @@
+# Quiet
+
+A menu bar app that plays white noise. Simple as that.
+
+Need 2 minutes to focus on that code review? Press play and drown the world out a little.
+
+![](https://user-images.githubusercontent.com/1211440/51442641-bf535780-1cd6-11e9-84b5-5c8b9851b6bc.png)
+
+### Running in development
+
+- Install deps: `npm install`
+- Start the app: `npm run start`
