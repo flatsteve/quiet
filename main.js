@@ -81,7 +81,6 @@ app.on("ready", () => {
 app.on("will-quit", () => {
   console.info("EXIT APP");
 
-  // Unregister all shortcuts.
   if (audio) {
     audio.kill();
   }
