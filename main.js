@@ -1,21 +1,20 @@
 const path = require("path");
-const { app, Tray } = require("electron");
+const { app, globalShortcut, Tray } = require("electron");
 const isDev = require("electron-is-dev");
 const player = require("play-sound")();
+
+let audio = null;
+let shouldRepeat = true;
 
 console.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 
 if (!isDev) {
-  app.setLoginItemSettings({
-    openAtLogin: true
-  });
-
+  app.setLoginItemSettings({ openAtLogin: true });
   app.dock.hide();
 }
 
 app.on("ready", () => {
   let isPlaying = false;
-  let audio;
 
   const playIcon = path.join(__dirname, "assets/play.png");
   const stopIcon = path.join(__dirname, "assets/stop.png");
@@ -27,32 +26,43 @@ app.on("ready", () => {
       audio.kill();
     }
 
+    isPlaying = true;
+    shouldRepeat = true;
+
+    tray.setImage(stopIcon);
+
     audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
       if (err) {
         return console.error(err);
       }
 
-      // When track ends just start playing again
-      console.info("RESTARTING");
-      play();
+      // When track ends just start playing again if it isn't explicity stopped
+      if (shouldRepeat) {
+        console.info("RESTARTING");
+        play();
+      }
     });
-
-    isPlaying = true;
-    tray.setImage(stopIcon);
   };
 
   const stop = () => {
-    audio.kill();
     isPlaying = false;
+    shouldRepeat = false;
+
+    audio.kill();
     tray.setImage(playIcon);
   };
 
-  tray.on("click", () => {
+  const handlePlayStop = () => {
     if (isPlaying) {
       return stop();
     }
 
     play();
+  };
+
+  // Event handlers
+  tray.on("click", () => {
+    handlePlayStop();
   });
 
   tray.on("double-click", () => {
@@ -62,4 +72,19 @@ app.on("ready", () => {
 
     app.quit();
   });
+
+  globalShortcut.register("MediaPlayPause", () => {
+    handlePlayStop();
+  });
+});
+
+app.on("will-quit", () => {
+  console.info("EXIT APP");
+
+  // Unregister all shortcuts.
+  if (audio) {
+    audio.kill();
+  }
+
+  globalShortcut.unregisterAll();
 });
