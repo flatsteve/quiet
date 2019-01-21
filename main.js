@@ -11,7 +11,7 @@ autoUpdater.logger.transports.file.level = "info";
 let audio = null;
 let shouldRepeat = true;
 
-log.info("APP IS RUNNING IN", isDev ? "DEV" : "PROD");
+log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 
 if (!isDev) {
   app.setLoginItemSettings({ openAtLogin: true });
@@ -28,6 +28,7 @@ app.on("ready", () => {
   const playIcon = path.join(__dirname, "assets/play.png");
   const stopIcon = path.join(__dirname, "assets/stop.png");
   const tray = new Tray(playIcon);
+  tray.setToolTip("Quiet please.");
 
   const play = () => {
     // Make sure child process is killed before starting a new one.
