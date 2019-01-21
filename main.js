@@ -11,7 +11,7 @@ autoUpdater.logger.transports.file.level = "info";
 let audio = null;
 let shouldRepeat = true;
 
-log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
+log.info("APP IS RUNNING IN", isDev ? "DEV" : "PROD");
 
 if (!isDev) {
   app.setLoginItemSettings({ openAtLogin: true });
