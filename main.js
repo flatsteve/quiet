@@ -1,12 +1,17 @@
-const path = require("path");
 const { app, globalShortcut, Tray } = require("electron");
+const { autoUpdater } = require("electron-updater");
+const log = require("electron-log");
+const path = require("path");
 const isDev = require("electron-is-dev");
 const player = require("play-sound")();
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info";
 
 let audio = null;
 let shouldRepeat = true;
 
-console.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
+log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 
 if (!isDev) {
   app.setLoginItemSettings({ openAtLogin: true });
@@ -14,6 +19,10 @@ if (!isDev) {
 }
 
 app.on("ready", () => {
+  if (!isDev) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+
   let isPlaying = false;
 
   const playIcon = path.join(__dirname, "assets/play.png");
@@ -33,12 +42,12 @@ app.on("ready", () => {
 
     audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
       if (err) {
-        return console.error(err);
+        return log.error(err);
       }
 
       // When track ends just start playing again if it isn't explicity stopped
       if (shouldRepeat) {
-        console.info("RESTARTING");
+        log.info("RESTARTING");
         play();
       }
     });
@@ -79,7 +88,7 @@ app.on("ready", () => {
 });
 
 app.on("will-quit", () => {
-  console.info("EXIT APP");
+  log.info("EXIT APP");
 
   if (audio) {
     audio.kill();

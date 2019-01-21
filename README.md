@@ -10,4 +10,5 @@ Need 2 minutes to focus on that code review? Press play and drown the world out 
 
 - Install deps: `npm install`
 - Start the app: `npm run start`
-- Build the app: `npm run dist`
+- Build the app: `npm run build`
+- Publish the app: `npm run publish`
