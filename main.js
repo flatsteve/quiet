@@ -1,11 +1,9 @@
 const path = require("path");
 const { app, Tray } = require("electron");
 const isDev = require("electron-is-dev");
-const log = require("electron-log");
-const player = require("play-sound")((opts = {}));
+const player = require("play-sound")();
 
-log.error("APP RUNNING");
-log.error("IS DEV:", isDev);
+console.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 
 if (!isDev) {
   app.setLoginItemSettings({
@@ -16,35 +14,50 @@ if (!isDev) {
 }
 
 app.on("ready", () => {
-  const playIcon = path.join(__dirname, "assets/play.png");
-  const stopIcon = path.join(__dirname, "assets/stop.png");
-
   let isPlaying = false;
   let audio;
 
-  tray = new Tray(playIcon);
+  const playIcon = path.join(__dirname, "assets/play.png");
+  const stopIcon = path.join(__dirname, "assets/stop.png");
+  const tray = new Tray(playIcon);
+
+  const play = () => {
+    // Make sure child process is killed before starting a new one.
+    if (audio) {
+      audio.kill();
+    }
+
+    audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
+      if (err) {
+        return console.error(err);
+      }
+
+      // When track ends just start playing again
+      console.info("RESTARTING");
+      play();
+    });
+
+    isPlaying = true;
+    tray.setImage(stopIcon);
+  };
+
+  const stop = () => {
+    audio.kill();
+    isPlaying = false;
+    tray.setImage(playIcon);
+  };
 
   tray.on("click", () => {
     if (isPlaying) {
-      audio.kill();
-
-      isPlaying = false;
-      tray.setImage(playIcon);
-    } else {
-      audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
-        if (err) {
-          log.error(err);
-        }
-      });
-
-      isPlaying = true;
-      tray.setImage(stopIcon);
+      return stop();
     }
+
+    play();
   });
 
   tray.on("double-click", () => {
     if (isPlaying) {
-      audio.kill();
+      stop();
     }
 
     app.quit();
