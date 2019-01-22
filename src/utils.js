@@ -1,5 +1,6 @@
 const { systemPreferences } = require("electron");
 const path = require("path");
+const isDev = require("electron-is-dev");
 
 const joinPath = relativePath => {
   return path.join(__dirname, relativePath);
@@ -19,16 +20,13 @@ const getIconsByTheme = () => {
   }
 };
 
-const updateCurrentIcon = (isPlaying, tray) => {
-  const { playIcon, stopIcon } = getIconsByTheme();
-
-  if (isPlaying) {
-    return tray.setImage(stopIcon);
+const setProductionAppPreferences = () => {
+  if (!isDev) {
+    app.setLoginItemSettings({ openAtLogin: true });
+    app.dock.hide();
   }
-
-  return tray.setImage(playIcon);
 };
 
 module.exports.joinPath = joinPath;
 module.exports.getIconsByTheme = getIconsByTheme;
-module.exports.updateCurrentIcon = updateCurrentIcon;
+module.exports.setProductionAppPreferences = setProductionAppPreferences;
