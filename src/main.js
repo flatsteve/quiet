@@ -1,13 +1,16 @@
-const { app, globalShortcut, Tray } = require("electron");
+const { app, globalShortcut, systemPreferences, Tray } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const path = require("path");
 const isDev = require("electron-is-dev");
 const player = require("play-sound")();
 
+const { getIconsByTheme, updateCurrentIcon } = require("./utils");
+
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 
+let icons;
 let audio = null;
 let shouldRepeat = true;
 
@@ -25,9 +28,8 @@ app.on("ready", () => {
 
   let isPlaying = false;
 
-  const playIcon = path.join(__dirname, "assets/play.png");
-  const stopIcon = path.join(__dirname, "assets/stop.png");
-  const tray = new Tray(playIcon);
+  icons = getIconsByTheme();
+  const tray = new Tray(icons.playIcon);
   tray.setToolTip("Quiet please.");
 
   const play = () => {
@@ -39,9 +41,9 @@ app.on("ready", () => {
     isPlaying = true;
     shouldRepeat = true;
 
-    tray.setImage(stopIcon);
+    tray.setImage(icons.stopIcon);
 
-    audio = player.play(path.join(__dirname, "assets/noise.mp3"), err => {
+    audio = player.play(path.join(__dirname, "../assets/noise.mp3"), err => {
       if (err) {
         return log.error(err);
       }
@@ -59,7 +61,7 @@ app.on("ready", () => {
     shouldRepeat = false;
 
     audio.kill();
-    tray.setImage(playIcon);
+    tray.setImage(icons.playIcon);
   };
 
   const handlePlayStop = () => {
@@ -82,6 +84,14 @@ app.on("ready", () => {
 
     app.quit();
   });
+
+  systemPreferences.subscribeNotification(
+    "AppleInterfaceThemeChangedNotification",
+    () => {
+      icons = getIconsByTheme();
+      updateCurrentIcon(isPlaying, tray);
+    }
+  );
 
   globalShortcut.register("MediaPlayPause", () => {
     handlePlayStop();

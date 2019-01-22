@@ -4,7 +4,7 @@
   "license": "ISC",
   "description": "Menu bar white noise player",
   "repository": "https://github.com/flatsteve/quiet",
-  "main": "main.js",
+  "main": "src/main.js",
   "version": "0.3.0",
   "scripts": {
     "start": "electron .",
