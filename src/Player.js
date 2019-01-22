@@ -50,15 +50,12 @@ class Player {
       this.audioProcess.kill();
     }
 
-    console.log(this.tray);
     this.tray.setImage(this.icons.playIcon);
   }
 
   handleThemeChange() {
     this.icons = getIconsByTheme();
     const { playIcon, stopIcon } = this.icons;
-
-    console.log(this);
 
     if (this.isPlaying) {
       this.tray.setImage(stopIcon);
