@@ -29,5 +29,6 @@ const updateCurrentIcon = (isPlaying, tray) => {
   return tray.setImage(playIcon);
 };
 
+module.exports.joinPath = joinPath;
 module.exports.getIconsByTheme = getIconsByTheme;
 module.exports.updateCurrentIcon = updateCurrentIcon;

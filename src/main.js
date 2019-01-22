@@ -5,13 +5,13 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 const player = require("play-sound")();
 
-const { getIconsByTheme, updateCurrentIcon } = require("./utils");
+const { getIconsByTheme, joinPath, updateCurrentIcon } = require("./utils");
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 
 let icons;
-let audio = null;
+let audioProcess = null;
 let shouldRepeat = true;
 
 log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
@@ -34,8 +34,8 @@ app.on("ready", () => {
 
   const play = () => {
     // Make sure child process is killed before starting a new one.
-    if (audio) {
-      audio.kill();
+    if (audioProcess) {
+      audioProcess.kill();
     }
 
     isPlaying = true;
@@ -43,7 +43,7 @@ app.on("ready", () => {
 
     tray.setImage(icons.stopIcon);
 
-    audio = player.play(path.join(__dirname, "../assets/noise.mp3"), err => {
+    audioProcess = player.play(joinPath("../assets/noise.mp3"), err => {
       if (err) {
         return log.error(err);
       }
@@ -60,7 +60,7 @@ app.on("ready", () => {
     isPlaying = false;
     shouldRepeat = false;
 
-    audio.kill();
+    audioProcess.kill();
     tray.setImage(icons.playIcon);
   };
 
@@ -101,8 +101,8 @@ app.on("ready", () => {
 app.on("will-quit", () => {
   log.info("EXIT APP");
 
-  if (audio) {
-    audio.kill();
+  if (audioProcess) {
+    audioProcess.kill();
   }
 
   globalShortcut.unregisterAll();
