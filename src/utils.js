@@ -1,4 +1,4 @@
-const { systemPreferences } = require("electron");
+const { app, systemPreferences } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
