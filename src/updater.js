@@ -2,13 +2,30 @@ const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
-const checkForUpdates = () => {
+const checkForUpdates = player => {
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = "info";
 
   if (!isDev) {
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
+
+    autoUpdater.on("update-available", () => {
+      log.info("Update available");
+    });
+
+    autoUpdater.on("download-progress", progressObj => {
+      log.info("Update percentage", progressObj.percent);
+    });
+
+    autoUpdater.on("update-downloaded", () => {
+      player.setUpdateAvailable();
+    });
   }
 };
 
-module.exports = checkForUpdates;
+const installUpdateAndRestart = () => {
+  autoUpdater.quitAndInstall();
+};
+
+module.exports.checkForUpdates = checkForUpdates;
+module.exports.installUpdateAndRestart = installUpdateAndRestart;

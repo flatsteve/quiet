@@ -10,12 +10,14 @@ const getIconsByTheme = () => {
   if (systemPreferences.isDarkMode()) {
     return {
       playIcon: joinPath("../assets/play-dark.png"),
-      stopIcon: joinPath("../assets/stop-dark.png")
+      stopIcon: joinPath("../assets/stop-dark.png"),
+      updateIcon: joinPath("../assets/update-dark.png")
     };
   } else {
     return {
       playIcon: joinPath("../assets/play-light.png"),
-      stopIcon: joinPath("../assets/stop-light.png")
+      stopIcon: joinPath("../assets/stop-light.png"),
+      updateIcon: joinPath("../assets/update-light.png")
     };
   }
 };

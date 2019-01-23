@@ -2,23 +2,35 @@ const log = require("electron-log");
 const player = require("play-sound")();
 
 const { getIconsByTheme, joinPath } = require("./utils");
+const { installUpdateAndRestart } = require("./updater");
 
 class Player {
   constructor(tray) {
     this.tray = tray;
-    this.tray.setToolTip("Quiet please...");
+    this.tray.setToolTip("Quiet please");
     this.isPlaying = false;
     this.audioProcess = null;
     this.shouldRepeat = true;
     this.icons = getIconsByTheme();
+    this.updateAvailable = false;
   }
 
-  handlePlayOrStop() {
+  handlePlayerClick() {
+    if (this.updateAvailable) {
+      this.stop();
+      return installUpdateAndRestart();
+    }
+
     if (this.isPlaying) {
       this.stop();
     } else {
       this.play();
     }
+  }
+
+  setUpdateAvailable() {
+    this.updateAvailable = true;
+    this.tray.setImage(this.icons.updateIcon);
   }
 
   play() {
@@ -55,7 +67,11 @@ class Player {
 
   handleThemeChange() {
     this.icons = getIconsByTheme();
-    const { playIcon, stopIcon } = this.icons;
+    const { playIcon, stopIcon, updateIcon } = this.icons;
+
+    if (this.updateAvailable) {
+      return this.tray.setImage(updateIcon);
+    }
 
     if (this.isPlaying) {
       this.tray.setImage(stopIcon);

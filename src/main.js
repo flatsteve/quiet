@@ -3,7 +3,7 @@ const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
 const Player = require("./Player");
-const checkForUpdates = require("./updater");
+const { checkForUpdates } = require("./updater");
 const { getIconsByTheme, setProductionAppPreferences } = require("./utils");
 
 let player;
@@ -12,18 +12,18 @@ log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 setProductionAppPreferences();
 
 app.on("ready", () => {
-  checkForUpdates();
-
   const { playIcon } = getIconsByTheme();
   const tray = new Tray(playIcon);
   player = new Player(tray);
 
+  checkForUpdates(player);
+
   tray.on("click", () => {
-    player.handlePlayOrStop();
+    player.handlePlayerClick();
   });
 
   globalShortcut.register("MediaPlayPause", () => {
-    player.handlePlayOrStop();
+    player.handlePlayerClick();
   });
 
   tray.on("double-click", () => {
