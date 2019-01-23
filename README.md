@@ -1,6 +1,6 @@
 # Quiet
 
-A menu bar app that plays white noise. Simple as that.
+A MacOS menu bar app that plays noise. Simple as that.
 
 Need 2 minutes to focus on that code review? Press play and drown the world out a little.
 
