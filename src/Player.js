@@ -8,17 +8,28 @@ class Player {
   constructor(tray) {
     this.tray = tray;
     this.tray.setToolTip("Quiet please");
+
+    this.track = joinPath("../assets/noise.mp3");
+
     this.isPlaying = false;
     this.audioProcess = null;
     this.shouldRepeat = true;
+
     this.icons = getIconsByTheme();
     this.updateAvailable = false;
   }
 
-  handlePlayerClick() {
+  handlePlayerEvent(droppedTrack) {
     if (this.updateAvailable) {
       this.stop();
       return installUpdateAndRestart();
+    }
+
+    if (droppedTrack) {
+      this.track = droppedTrack;
+
+      this.stop();
+      return this.play();
     }
 
     if (this.isPlaying) {
@@ -34,15 +45,11 @@ class Player {
   }
 
   play() {
-    if (this.audioProcess) {
-      this.audioProcess.kill();
-    }
-
     this.isPlaying = true;
     this.shouldRepeat = true;
     this.tray.setImage(this.icons.stopIcon);
 
-    this.audioProcess = player.play(joinPath("../assets/noise.mp3"), err => {
+    this.audioProcess = player.play(this.track, err => {
       if (err) {
         return log.error(err);
       }

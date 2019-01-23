@@ -1,4 +1,10 @@
-const { app, globalShortcut, systemPreferences, Tray } = require("electron");
+const {
+  app,
+  dialog,
+  globalShortcut,
+  systemPreferences,
+  Tray
+} = require("electron");
 const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
@@ -19,11 +25,29 @@ app.on("ready", () => {
   checkForUpdates(player);
 
   tray.on("click", () => {
-    player.handlePlayerClick();
+    player.handlePlayerEvent();
   });
 
   globalShortcut.register("MediaPlayPause", () => {
-    player.handlePlayerClick();
+    player.handlePlayerEvent();
+  });
+
+  tray.on("drop-files", (e, files) => {
+    const track = files[0];
+    const trackExtension = track.split(".").pop();
+
+    log.info("Track:", track, "Extension:", trackExtension);
+
+    if (trackExtension !== "mp3") {
+      return dialog.showMessageBox(null, {
+        type: "error",
+        title: "You're killing me smalls...",
+        message: "You're killing me smalls...",
+        detail: "I only play .mp3's for now."
+      });
+    }
+
+    player.handlePlayerEvent(track);
   });
 
   tray.on("double-click", () => {
