@@ -37,7 +37,7 @@ class Player {
 
       if (this.shouldRepeat) {
         log.info("RESTARTING");
-        this.play();
+        this.play(sound);
       }
     });
   }
