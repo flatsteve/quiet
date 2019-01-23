@@ -31,6 +31,10 @@ app.on("ready", () => {
     app.quit();
   });
 
+  tray.on("drop-files", function(event, files) {
+    player.handlePlayOrStop(files[0]);
+  });
+
   systemPreferences.subscribeNotification(
     "AppleInterfaceThemeChangedNotification",
     () => player.handleThemeChange()

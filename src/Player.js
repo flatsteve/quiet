@@ -13,15 +13,15 @@ class Player {
     this.icons = getIconsByTheme();
   }
 
-  handlePlayOrStop() {
+  handlePlayOrStop(sound = joinPath("../assets/noise.mp3")) {
     if (this.isPlaying) {
       this.stop();
     } else {
-      this.play();
+      this.play(sound);
     }
   }
 
-  play() {
+  play(sound) {
     if (this.audioProcess) {
       this.audioProcess.kill();
     }
@@ -30,7 +30,7 @@ class Player {
     this.shouldRepeat = true;
     this.tray.setImage(this.icons.stopIcon);
 
-    this.audioProcess = player.play(joinPath("../assets/noise.mp3"), err => {
+    this.audioProcess = player.play(sound, err => {
       if (err) {
         return log.error(err);
       }
