@@ -1,8 +1,15 @@
 const { app, systemPreferences } = require("electron");
 const path = require("path");
+const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
-const joinPath = relativePath => {
+const joinPath = (relativePath, { extraResource = false } = {}) => {
+  // Prod: assets is in the same directory (as Resources) so remove the ../
+  if (extraResource && !isDev) {
+    relativePath = relativePath.replace("../", "");
+    return path.join(process.resourcesPath, relativePath);
+  }
+
   return path.join(__dirname, relativePath);
 };
 

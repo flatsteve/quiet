@@ -9,7 +9,12 @@ class Player {
     this.tray = tray;
     this.tray.setToolTip("Quiet please");
 
-    this.track = joinPath("../assets/noise.mp3");
+    // Weird asar packaging thing - files within an asar package have restrictions.
+    // It seems because we spawn a process to tracks we have to un-package them essentially
+    // removing them from the archive and lifting them into the Resources directory
+    // https://github.com/electron-userland/electron-builder/issues/751
+    // https://electronjs.org/docs/tutorial/application-packaging
+    this.track = joinPath("../assets/noise.mp3", { extraResource: true });
 
     this.isPlaying = false;
     this.audioProcess = null;

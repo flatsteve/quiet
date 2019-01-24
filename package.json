@@ -22,7 +22,7 @@
         "repo": "quiet"
       }
     ],
-    "asar": false
+    "extraResources": "assets/noise.mp3"
   },
   "devDependencies": {
     "electron": "^4.0.1",
