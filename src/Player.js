@@ -3,6 +3,7 @@ const player = require("play-sound")();
 
 const { getIconsByTheme, joinPath } = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
+const { showNotification } = require("./notifications");
 
 class Player {
   constructor(tray) {
@@ -53,6 +54,7 @@ class Player {
     this.isPlaying = true;
     this.shouldRepeat = true;
     this.tray.setImage(this.icons.stopIcon);
+    showNotification({ title: "Now playing", body: this.track });
 
     this.audioProcess = player.play(this.track, err => {
       if (err) {
