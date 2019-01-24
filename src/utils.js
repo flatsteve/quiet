@@ -13,6 +13,10 @@ const joinPath = (relativePath, { extraResource = false } = {}) => {
   return path.join(__dirname, relativePath);
 };
 
+const getTrackName = trackPath => {
+  return trackPath.split("/").pop();
+};
+
 const getIconsByTheme = () => {
   if (systemPreferences.isDarkMode()) {
     return {
@@ -37,5 +41,6 @@ const setProductionAppPreferences = () => {
 };
 
 module.exports.joinPath = joinPath;
+module.exports.getTrackName = getTrackName;
 module.exports.getIconsByTheme = getIconsByTheme;
 module.exports.setProductionAppPreferences = setProductionAppPreferences;

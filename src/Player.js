@@ -1,7 +1,7 @@
 const log = require("electron-log");
 const player = require("play-sound")();
 
-const { getIconsByTheme, joinPath } = require("./utils");
+const { getIconsByTheme, getTrackName, joinPath } = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
 const { showNotification } = require("./notifications");
 
@@ -54,7 +54,7 @@ class Player {
     this.isPlaying = true;
     this.shouldRepeat = true;
     this.tray.setImage(this.icons.stopIcon);
-    showNotification({ title: "Now playing", body: this.track });
+    showNotification({ title: "Now playing", body: getTrackName(this.track) });
 
     this.audioProcess = player.play(this.track, err => {
       if (err) {
