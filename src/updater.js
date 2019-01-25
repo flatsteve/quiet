@@ -9,10 +9,6 @@ const checkForUpdates = player => {
   if (!isDev) {
     autoUpdater.checkForUpdates();
 
-    autoUpdater.on("update-available", () => {
-      log.info("Update available");
-    });
-
     autoUpdater.on("download-progress", progressObj => {
       log.info("Update percentage", progressObj.percent);
     });

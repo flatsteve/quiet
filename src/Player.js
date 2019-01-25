@@ -19,63 +19,15 @@ class Player {
 
     this.isPlaying = false;
     this.audioProcess = null;
-    this.shouldRepeat = true;
+    this.shouldPlayAgain = true;
 
     this.icons = getIconsByTheme();
     this.updateAvailable = false;
   }
 
-  handlePlayerEvent(droppedTrack) {
-    if (this.updateAvailable) {
-      this.stop();
-      return installUpdateAndRestart();
-    }
-
-    if (droppedTrack) {
-      // THIS IS THE ISSUE - stop is async - callback hasn't been hit by the time we call play
-      // So stop kill audio & sets should repeat to false
-      // We call play - setting should repeat to true
-      // Callback is hit and play re-triggered, hence double tracks playing
-      this.stop();
-
-      this.track = droppedTrack;
-      return this.play();
-    }
-
-    if (this.isPlaying) {
-      this.stop();
-    } else {
-      this.play();
-    }
-  }
-
-  play() {
-    this.audioProcess = player.play(this.track, err => {
-      if (err) {
-        return log.error(err);
-      }
-
-      if (this.shouldRepeat) {
-        log.info("RESTARTING");
-        this.play();
-      }
-    });
-
-    this.isPlaying = true;
-    this.shouldRepeat = true;
-    this.tray.setImage(this.icons.stopIcon);
-    showNotification({ title: "Now playing", body: getTrackName(this.track) });
-  }
-
-  stop() {
-    this.shouldRepeat = false;
-
-    if (this.audioProcess) {
-      this.audioProcess.kill();
-    }
-
-    this.isPlaying = false;
-    this.tray.setImage(this.icons.playIcon);
+  setUpdateAvailable() {
+    this.updateAvailable = true;
+    this.tray.setImage(this.icons.updateIcon);
   }
 
   handleThemeChange() {
@@ -93,9 +45,70 @@ class Player {
     }
   }
 
-  setUpdateAvailable() {
-    this.updateAvailable = true;
-    this.tray.setImage(this.icons.updateIcon);
+  handlePlayerEvent(droppedTrack) {
+    if (this.updateAvailable) {
+      this.stop();
+      return installUpdateAndRestart();
+    }
+
+    if (droppedTrack) {
+      return this.handleDroppedTrack(droppedTrack);
+    }
+
+    this.handleTrayClick();
+  }
+
+  handleDroppedTrack(droppedTrack) {
+    this.track = droppedTrack;
+
+    if (this.isPlaying) {
+      return this.stop({ skipToNewTrack: true });
+    }
+
+    this.play();
+  }
+
+  handleTrayClick() {
+    if (this.isPlaying) {
+      return this.stop();
+    }
+
+    this.play();
+  }
+
+  play() {
+    this.audioProcess = player.play(this.track, err => {
+      if (err) {
+        return log.error(err);
+      }
+
+      // Process was stopped without error
+      if (this.shouldPlayAgain) {
+        this.play();
+      }
+    });
+
+    this.isPlaying = true;
+    this.shouldPlayAgain = true;
+    this.tray.setImage(this.icons.stopIcon);
+    showNotification({ title: "Now playing", body: getTrackName(this.track) });
+  }
+
+  stop({ skipToNewTrack } = {}) {
+    // If skipToNewTrack is past kill the current process and start a new one using the dropped track
+    // If not kill the process and do not start a new track (see play() callback)
+    if (skipToNewTrack) {
+      this.shouldPlayAgain = true;
+    } else {
+      this.shouldPlayAgain = false;
+    }
+
+    if (this.audioProcess) {
+      this.audioProcess.kill();
+    }
+
+    this.isPlaying = false;
+    this.tray.setImage(this.icons.playIcon);
   }
 }
 

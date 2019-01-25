@@ -1,6 +1,5 @@
 const { app, systemPreferences } = require("electron");
 const path = require("path");
-const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
 const joinPath = (relativePath, { extraResource = false } = {}) => {
