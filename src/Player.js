@@ -32,9 +32,13 @@ class Player {
     }
 
     if (droppedTrack) {
-      this.track = droppedTrack;
-
+      // THIS IS THE ISSUE - stop is async - callback hasn't been hit by the time we call play
+      // So stop kill audio & sets should repeat to false
+      // We call play - setting should repeat to true
+      // Callback is hit and play re-triggered, hence double tracks playing
       this.stop();
+
+      this.track = droppedTrack;
       return this.play();
     }
 
@@ -45,17 +49,7 @@ class Player {
     }
   }
 
-  setUpdateAvailable() {
-    this.updateAvailable = true;
-    this.tray.setImage(this.icons.updateIcon);
-  }
-
   play() {
-    this.isPlaying = true;
-    this.shouldRepeat = true;
-    this.tray.setImage(this.icons.stopIcon);
-    showNotification({ title: "Now playing", body: getTrackName(this.track) });
-
     this.audioProcess = player.play(this.track, err => {
       if (err) {
         return log.error(err);
@@ -66,16 +60,21 @@ class Player {
         this.play();
       }
     });
+
+    this.isPlaying = true;
+    this.shouldRepeat = true;
+    this.tray.setImage(this.icons.stopIcon);
+    showNotification({ title: "Now playing", body: getTrackName(this.track) });
   }
 
   stop() {
-    this.isPlaying = false;
     this.shouldRepeat = false;
 
     if (this.audioProcess) {
       this.audioProcess.kill();
     }
 
+    this.isPlaying = false;
     this.tray.setImage(this.icons.playIcon);
   }
 
@@ -92,6 +91,11 @@ class Player {
     } else {
       this.tray.setImage(playIcon);
     }
+  }
+
+  setUpdateAvailable() {
+    this.updateAvailable = true;
+    this.tray.setImage(this.icons.updateIcon);
   }
 }
 
