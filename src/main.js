@@ -10,17 +10,8 @@ const {
   showErrorDialog
 } = require("./utils");
 
-if (isDev) {
-  try {
-    require("electron-reloader")(module);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 let player;
 
-log.info("APP RUNNING IN", isDev ? "DEV" : "PROD");
 setProductionAppPreferences();
 
 app.on("ready", () => {

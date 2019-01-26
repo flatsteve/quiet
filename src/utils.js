@@ -32,13 +32,6 @@ const getIconsByTheme = () => {
   }
 };
 
-const setProductionAppPreferences = () => {
-  if (!isDev) {
-    app.setLoginItemSettings({ openAtLogin: true });
-    app.dock.hide();
-  }
-};
-
 const showErrorDialog = ({
   message = "You're killing me smalls...",
   detail
@@ -51,10 +44,17 @@ const showErrorDialog = ({
   });
 };
 
+const setProductionAppPreferences = () => {
+  if (!isDev) {
+    app.setLoginItemSettings({ openAtLogin: true });
+    app.dock.hide();
+  }
+};
+
 module.exports = {
   joinPath,
   getTrackName,
   getIconsByTheme,
-  setProductionAppPreferences,
-  showErrorDialog
+  showErrorDialog,
+  setProductionAppPreferences
 };
