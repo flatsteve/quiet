@@ -1,4 +1,4 @@
-const { app, systemPreferences } = require("electron");
+const { app, dialog, systemPreferences } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -39,7 +39,22 @@ const setProductionAppPreferences = () => {
   }
 };
 
-module.exports.joinPath = joinPath;
-module.exports.getTrackName = getTrackName;
-module.exports.getIconsByTheme = getIconsByTheme;
-module.exports.setProductionAppPreferences = setProductionAppPreferences;
+const showErrorDialog = ({
+  message = "You're killing me smalls...",
+  detail
+}) => {
+  dialog.showMessageBox(null, {
+    type: "error",
+    title: message,
+    message,
+    detail
+  });
+};
+
+module.exports = {
+  joinPath,
+  getTrackName,
+  getIconsByTheme,
+  setProductionAppPreferences,
+  showErrorDialog
+};

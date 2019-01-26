@@ -23,5 +23,7 @@ const installUpdateAndRestart = () => {
   autoUpdater.quitAndInstall();
 };
 
-module.exports.checkForUpdates = checkForUpdates;
-module.exports.installUpdateAndRestart = installUpdateAndRestart;
+module.exports = {
+  checkForUpdates,
+  installUpdateAndRestart
+};

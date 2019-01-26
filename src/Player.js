@@ -1,7 +1,12 @@
 const log = require("electron-log");
 const player = require("play-sound")();
 
-const { getIconsByTheme, getTrackName, joinPath } = require("./utils");
+const {
+  getIconsByTheme,
+  getTrackName,
+  joinPath,
+  showErrorDialog
+} = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
 const { showNotification } = require("./notifications");
 
@@ -79,7 +84,13 @@ class Player {
   play() {
     this.audioProcess = player.play(this.track, err => {
       if (err) {
-        return log.error(err);
+        log.error(err);
+
+        return showErrorDialog({
+          message: "Error playing track",
+          detail:
+            "Sorry, something went wrong. Check the track hasn't moved or been deleted."
+        });
       }
 
       // Process was stopped without error

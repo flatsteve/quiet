@@ -1,16 +1,14 @@
-const {
-  app,
-  dialog,
-  globalShortcut,
-  systemPreferences,
-  Tray
-} = require("electron");
+const { app, globalShortcut, systemPreferences, Tray } = require("electron");
 const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
 const Player = require("./Player");
 const { checkForUpdates } = require("./updater");
-const { getIconsByTheme, setProductionAppPreferences } = require("./utils");
+const {
+  getIconsByTheme,
+  setProductionAppPreferences,
+  showErrorDialog
+} = require("./utils");
 
 let player;
 
@@ -39,12 +37,7 @@ app.on("ready", () => {
     log.info("Track:", track, "Extension:", trackExtension);
 
     if (trackExtension !== "mp3") {
-      return dialog.showMessageBox(null, {
-        type: "error",
-        title: "You're killing me smalls...",
-        message: "You're killing me smalls...",
-        detail: "I only play .mp3's for now."
-      });
+      return showErrorDialog({ detail: "I only play .mp3's for now." });
     }
 
     player.handlePlayerEvent(track);

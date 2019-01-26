@@ -10,4 +10,6 @@ const showNotification = ({ title, body }) => {
   return notification.show();
 };
 
-module.exports.showNotification = showNotification;
+module.exports = {
+  showNotification
+};
