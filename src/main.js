@@ -1,6 +1,5 @@
 const { app, globalShortcut, systemPreferences, Tray } = require("electron");
 const log = require("electron-log");
-const isDev = require("electron-is-dev");
 
 const Player = require("./Player");
 const { checkForUpdates } = require("./updater");

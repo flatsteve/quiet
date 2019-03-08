@@ -26,6 +26,7 @@ class Player {
     this.isPlaying = false;
     this.audioProcess = null;
     this.shouldPlayAgain = true;
+    this.showNotification = true;
 
     this.icons = getIconsByTheme();
     this.updateAvailable = false;
@@ -94,7 +95,8 @@ class Player {
         });
       }
 
-      // Process was stopped without error
+      // Callback - if we get here audio process finished without error
+      // This is the "loop", if shouldPlayAgain is true then play whatever this.track is
       if (this.shouldPlayAgain) {
         this.play();
       }
@@ -103,7 +105,15 @@ class Player {
     this.isPlaying = true;
     this.shouldPlayAgain = true;
     this.tray.setImage(this.icons.stopIcon);
-    showNotification({ title: "Now playing", body: getTrackName(this.track) });
+
+    if (this.showNotification) {
+      showNotification({
+        title: "Now playing",
+        body: getTrackName(this.track)
+      });
+    }
+
+    this.showNotification = false;
   }
 
   stop({ skipToNewTrack } = {}) {
@@ -120,6 +130,7 @@ class Player {
     }
 
     this.isPlaying = false;
+    this.showNotification = true;
     this.tray.setImage(this.icons.playIcon);
   }
 }
