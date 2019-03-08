@@ -20,9 +20,9 @@ Need 2 minutes to focus on that code review? Press play and drown the world out 
 
 - Download and install the latest [release](https://github.com/flatsteve/quiet/releases)
 
-### Running in development and building
+### Running in development, building and publishing
 
 - Install deps: `npm install`
 - Start the app: `npm run start`
 - Build the app: `npm run build`
-- Publish the app: `npm run publish`
+- Publish the app: bump version then `npm run publish`
