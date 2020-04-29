@@ -1,28 +1,21 @@
 const log = require("electron-log");
 const player = require("play-sound")();
+const Timer = require("./Timer");
 
 const {
-  TIMES,
   getIconsByTheme,
   getTrackName,
-  getTimerDisplay,
   joinPath,
   showErrorDialog,
 } = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
 const { showNotification } = require("./notifications");
 
-const WORK_TIMER_VAL = TIMES.TWENTY_FIVE_MIN;
-const BREAK_TIMER_VAL = TIMES.FIVE_MIN;
-
 class Player {
   constructor(tray) {
     this.tray = tray;
     this.tray.setToolTip("Quiet please");
-    this.intervalId = null;
-    this.currentTimer = WORK_TIMER_VAL;
-    this.tray.setTitle(getTimerDisplay(this.currentTimer));
-    this.workMode = true;
+    this.timer = new Timer(tray, this);
 
     // extraResource = Weird asar packaging thing. Files within an asar archive have restrictions.
     // It seems because we spawn a node child_process for tracks we have to un-package them (via extraResource)
@@ -63,11 +56,13 @@ class Player {
 
   handlePlayerEvent(droppedTrack) {
     if (this.updateAvailable) {
+      this.timer.resetTimer({ manualStop: true });
       this.stop();
       return installUpdateAndRestart();
     }
 
     if (droppedTrack) {
+      this.timer.resetTimer({ manualStop: true });
       return this.handleDroppedTrack(droppedTrack);
     }
 
@@ -86,22 +81,11 @@ class Player {
 
   handleTrayClick() {
     if (this.isPlaying) {
-      this.resetTimer({ manualStop: true });
+      this.timer.resetTimer({ manualStop: true });
       return this.stop();
     }
 
-    this.intervalId = setInterval(() => {
-      this.currentTimer -= 1;
-
-      const displayTime = getTimerDisplay(this.currentTimer);
-      this.tray.setTitle(displayTime);
-
-      if (this.currentTimer <= 0) {
-        this.resetTimer();
-        return this.stop();
-      }
-    }, TIMES.ONE_SEC);
-
+    this.timer.start();
     this.play();
   }
 
@@ -154,20 +138,6 @@ class Player {
     this.isPlaying = false;
     this.showNotification = true;
     this.tray.setImage(this.icons.playIcon);
-  }
-
-  resetTimer({ manualStop } = {}) {
-    clearInterval(this.intervalId);
-
-    if (manualStop) {
-      this.currentTimer = WORK_TIMER_VAL;
-    } else {
-      this.currentTimer = this.workMode ? BREAK_TIMER_VAL : WORK_TIMER_VAL;
-      this.workMode = !this.workMode;
-    }
-
-    this.tray.setTitle(getTimerDisplay(this.currentTimer));
-    this.intervalId = null;
   }
 }
 

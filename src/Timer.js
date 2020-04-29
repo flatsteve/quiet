@@ -1,0 +1,46 @@
+const { TIMES, getTimerDisplay } = require("./utils");
+
+const WORK_TIMER_VAL = TIMES.TWENTY_FIVE_MIN;
+const BREAK_TIMER_VAL = TIMES.FIVE_MIN;
+
+class Timer {
+  constructor(tray, player) {
+    this.tray = tray;
+    this.player = player;
+
+    this.intervalId = null;
+    this.currentTimer = WORK_TIMER_VAL;
+    this.tray.setTitle(getTimerDisplay(this.currentTimer));
+    this.workMode = true;
+  }
+
+  start() {
+    this.intervalId = setInterval(() => {
+      this.currentTimer -= 1;
+
+      const displayTime = getTimerDisplay(this.currentTimer);
+      this.tray.setTitle(displayTime);
+
+      if (this.currentTimer <= 0) {
+        this.resetTimer();
+        return this.player.stop();
+      }
+    }, TIMES.ONE_SEC);
+  }
+
+  resetTimer({ manualStop } = {}) {
+    clearInterval(this.intervalId);
+
+    if (manualStop) {
+      this.currentTimer = WORK_TIMER_VAL;
+    } else {
+      this.currentTimer = this.workMode ? BREAK_TIMER_VAL : WORK_TIMER_VAL;
+      this.workMode = !this.workMode;
+    }
+
+    this.tray.setTitle(getTimerDisplay(this.currentTimer));
+    this.intervalId = null;
+  }
+}
+
+module.exports = Timer;
