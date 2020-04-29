@@ -62,8 +62,8 @@ const setProductionAppPreferences = () => {
 };
 
 const TIMES = {
-  TWENTY_FIVE_MIN: 10,
-  FIVE_MIN: 5,
+  TWENTY_FIVE_MIN: 1500,
+  FIVE_MIN: 300,
   ONE_SEC: 1000,
 };
 
