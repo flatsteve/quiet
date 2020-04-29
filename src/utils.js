@@ -1,4 +1,4 @@
-const { app, dialog, systemPreferences } = require("electron");
+const { app, dialog, nativeTheme } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -17,7 +17,7 @@ const getTrackName = (trackPath) => {
 };
 
 const getIconsByTheme = () => {
-  if (systemPreferences.isDarkMode()) {
+  if (nativeTheme.shouldUseDarkColors) {
     return {
       playIcon: joinPath("../assets/play-dark.png"),
       stopIcon: joinPath("../assets/stop-dark.png"),
