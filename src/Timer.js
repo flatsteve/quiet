@@ -1,12 +1,15 @@
+const EventEmitter = require("events");
+
 const { TIMES, getTimerDisplay } = require("./utils");
 
 const WORK_TIMER_VAL = TIMES.TWENTY_FIVE_MIN;
 const BREAK_TIMER_VAL = TIMES.FIVE_MIN;
 
-class Timer {
-  constructor(tray, player) {
+class Timer extends EventEmitter {
+  constructor(tray) {
+    super();
+
     this.tray = tray;
-    this.player = player;
 
     this.intervalId = null;
     this.currentTimer = WORK_TIMER_VAL;
@@ -23,7 +26,7 @@ class Timer {
 
       if (this.currentTimer < 0) {
         this.resetTimer();
-        return this.player.stop();
+        return this.emit("stop");
       }
     }, TIMES.ONE_SEC);
   }

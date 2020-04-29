@@ -1,7 +1,12 @@
-const { app, globalShortcut, systemPreferences, Tray } = require("electron");
+const {
+  app,
+  globalShortcut,
+  systemPreferences,
+  Menu,
+  Tray,
+} = require("electron");
 const log = require("electron-log");
 
-const Player = require("./Player");
 const { checkForUpdates } = require("./updater");
 const {
   getIconsByTheme,
@@ -9,24 +14,44 @@ const {
   showErrorDialog,
 } = require("./utils");
 
-let player;
-
 setProductionAppPreferences();
+
+const Player = require("./Player");
+const Timer = require("./Timer");
+const ContextMenu = require("./ContextMenu");
+
+let player;
 
 app.on("ready", () => {
   const { playIcon } = getIconsByTheme();
+
   const tray = new Tray(playIcon);
+  const timer = new Timer(tray);
   player = new Player(tray);
 
-  checkForUpdates(player);
+  const contextMenu = new ContextMenu();
+  const menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
+  tray.setContextMenu(menuTemplate);
 
-  tray.on("click", () => {
-    player.handlePlayerEvent();
-  });
+  // EVENTS //
+  function handleStop() {
+    timer.resetTimer({ manualStop: true });
+    player.stop();
+    contextMenu.toggleStartStop(menuTemplate);
+  }
 
-  globalShortcut.register("MediaPlayPause", () => {
-    player.handlePlayerEvent();
-  });
+  function handlePlay() {
+    timer.start();
+    player.play();
+    contextMenu.toggleStartStop(menuTemplate);
+  }
+
+  contextMenu.on("play", handlePlay);
+  contextMenu.on("stop", handleStop);
+  timer.on("stop", handleStop);
+  // EVENTS //
+
+  checkForUpdates();
 
   tray.on("drop-files", (e, files) => {
     const track = files[0];
@@ -38,12 +63,8 @@ app.on("ready", () => {
       return showErrorDialog({ detail: "I only play .mp3's for now." });
     }
 
-    player.handlePlayerEvent(track);
-  });
-
-  tray.on("double-click", () => {
-    player.stop();
-    app.quit();
+    timer.resetTimer({ manualStop: true });
+    player.handleDroppedTrack(droppedTrack);
   });
 
   systemPreferences.subscribeNotification(

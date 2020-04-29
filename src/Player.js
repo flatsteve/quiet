@@ -1,6 +1,5 @@
 const log = require("electron-log");
-const player = require("play-sound")();
-const Timer = require("./Timer");
+const playSound = require("play-sound")();
 
 const {
   getIconsByTheme,
@@ -8,14 +7,11 @@ const {
   joinPath,
   showErrorDialog,
 } = require("./utils");
-const { installUpdateAndRestart } = require("./updater");
 const { showNotification } = require("./notifications");
 
 class Player {
   constructor(tray) {
     this.tray = tray;
-    this.tray.setToolTip("Quiet please");
-    this.timer = new Timer(tray, this);
 
     // extraResource = Weird asar packaging thing. Files within an asar archive have restrictions.
     // It seems because we spawn a node child_process for tracks we have to un-package them (via extraResource)
@@ -54,21 +50,6 @@ class Player {
     this.tray.setImage(playIcon);
   }
 
-  handlePlayerEvent(droppedTrack) {
-    if (this.updateAvailable) {
-      this.timer.resetTimer({ manualStop: true });
-      this.stop();
-      return installUpdateAndRestart();
-    }
-
-    if (droppedTrack) {
-      this.timer.resetTimer({ manualStop: true });
-      return this.handleDroppedTrack(droppedTrack);
-    }
-
-    this.handleTrayClick();
-  }
-
   handleDroppedTrack(droppedTrack) {
     this.track = droppedTrack;
 
@@ -79,18 +60,8 @@ class Player {
     this.play();
   }
 
-  handleTrayClick() {
-    if (this.isPlaying) {
-      this.timer.resetTimer({ manualStop: true });
-      return this.stop();
-    }
-
-    this.timer.start();
-    this.play();
-  }
-
   play() {
-    this.audioProcess = player.play(this.track, (err) => {
+    this.audioProcess = playSound.play(this.track, (err) => {
       if (err) {
         log.error(err);
 
