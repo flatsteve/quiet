@@ -2,7 +2,7 @@
   "name": "quiet",
   "author": "Stephen McCann",
   "license": "ISC",
-  "description": "Menu bar white noise player",
+  "description": "Menu bar Pomodoro Tracker and Noise player",
   "repository": "https://github.com/flatsteve/quiet",
   "main": "src/main.js",
   "version": "0.11.0",
@@ -22,7 +22,7 @@
         "repo": "quiet"
       }
     ],
-    "extraResources": "assets/noise.mp3"
+    "extraResources": "assets/noises/*.mp3"
   },
   "devDependencies": {
     "electron": "^8.2.4",

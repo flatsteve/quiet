@@ -23,7 +23,7 @@ class Player {
     // thus freeing them from the restriction of archive files
     // https://github.com/electron-userland/electron-builder/issues/751
     // https://electronjs.org/docs/tutorial/application-packaging
-    this.track = joinPath("../assets/buzz.mp3", { extraResource: true });
+    this.track = joinPath("../assets/noises/buzz.mp3", { extraResource: true });
 
     this.isPlaying = false;
     this.audioProcess = null;
