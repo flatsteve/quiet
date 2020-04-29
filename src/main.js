@@ -6,7 +6,7 @@ const { checkForUpdates } = require("./updater");
 const {
   getIconsByTheme,
   setProductionAppPreferences,
-  showErrorDialog
+  showErrorDialog,
 } = require("./utils");
 
 let player;

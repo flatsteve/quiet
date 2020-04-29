@@ -12,7 +12,7 @@ const joinPath = (relativePath, { extraResource = false } = {}) => {
   return path.join(__dirname, relativePath);
 };
 
-const getTrackName = trackPath => {
+const getTrackName = (trackPath) => {
   return trackPath.split("/").pop();
 };
 
@@ -21,26 +21,36 @@ const getIconsByTheme = () => {
     return {
       playIcon: joinPath("../assets/play-dark.png"),
       stopIcon: joinPath("../assets/stop-dark.png"),
-      updateIcon: joinPath("../assets/update-dark.png")
+      updateIcon: joinPath("../assets/update-dark.png"),
     };
   } else {
     return {
       playIcon: joinPath("../assets/play-light.png"),
       stopIcon: joinPath("../assets/stop-light.png"),
-      updateIcon: joinPath("../assets/update-light.png")
+      updateIcon: joinPath("../assets/update-light.png"),
     };
   }
 };
 
+const getTimerDisplay = (currentTimer) => {
+  let minutes = parseInt(currentTimer / 60, 10);
+  let seconds = parseInt(currentTimer % 60, 10);
+
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+  seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+  return `${minutes}:${seconds}`;
+};
+
 const showErrorDialog = ({
   message = "You're killing me smalls...",
-  detail
+  detail,
 }) => {
   dialog.showMessageBox(null, {
     type: "error",
     title: message,
     message,
-    detail
+    detail,
   });
 };
 
@@ -51,10 +61,18 @@ const setProductionAppPreferences = () => {
   }
 };
 
+const TIMES = {
+  TWENTY_FIVE_MIN: 10,
+  FIVE_MIN: 5,
+  ONE_SEC: 1000,
+};
+
 module.exports = {
+  TIMES,
   joinPath,
   getTrackName,
+  getTimerDisplay,
   getIconsByTheme,
   showErrorDialog,
-  setProductionAppPreferences
+  setProductionAppPreferences,
 };
