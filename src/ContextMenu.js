@@ -16,7 +16,7 @@ class ContextMenu extends EventEmitter {
         label: "Stop",
         enabled: false,
         click: () => {
-          this.emit("stop");
+          this.emit("stop", { shouldReset: true });
         },
       },
       { type: "separator" },

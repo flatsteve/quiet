@@ -25,17 +25,17 @@ class Timer extends EventEmitter {
       this.tray.setTitle(displayTime);
 
       if (this.currentTimer < 0) {
-        this.resetTimer();
-        return this.emit("stop");
+        return this.emit("stop", { shouldReset: false });
       }
     }, TIMES.ONE_SEC);
   }
 
-  resetTimer({ manualStop } = {}) {
+  resetTimer(shouldReset) {
     clearInterval(this.intervalId);
 
-    if (manualStop) {
+    if (shouldReset) {
       this.currentTimer = WORK_TIMER_VAL;
+      this.workMode = true;
     } else {
       this.currentTimer = this.workMode ? BREAK_TIMER_VAL : WORK_TIMER_VAL;
       this.workMode = !this.workMode;

@@ -63,8 +63,8 @@ const setProductionAppPreferences = () => {
 };
 
 const TIMES = {
-  TWENTY_FIVE_MIN: 1500,
-  FIVE_MIN: 300,
+  TWENTY_FIVE_MIN: isDev ? 8 : 1500,
+  FIVE_MIN: isDev ? 3 : 300,
   ONE_SEC: 1000,
 };
 

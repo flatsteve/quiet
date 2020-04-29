@@ -34,8 +34,8 @@ app.on("ready", () => {
   tray.setContextMenu(menuTemplate);
 
   // EVENTS //
-  function handleStop() {
-    timer.resetTimer({ manualStop: true });
+  function handleStop({ shouldReset }) {
+    timer.resetTimer(shouldReset);
     player.stop();
     contextMenu.toggleStartStop(menuTemplate);
   }
@@ -63,7 +63,7 @@ app.on("ready", () => {
       return showErrorDialog({ detail: "I only play .mp3's for now." });
     }
 
-    timer.resetTimer({ manualStop: true });
+    timer.resetTimer({ shouldReset: true });
     player.handleDroppedTrack(droppedTrack);
   });
 
