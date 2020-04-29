@@ -10,18 +10,18 @@ class Timer {
 
     this.intervalId = null;
     this.currentTimer = WORK_TIMER_VAL;
-    this.tray.setTitle(getTimerDisplay(this.currentTimer));
     this.workMode = true;
+    this.tray.setTitle(getTimerDisplay(this.currentTimer, this.workMode));
   }
 
   start() {
     this.intervalId = setInterval(() => {
       this.currentTimer -= 1;
 
-      const displayTime = getTimerDisplay(this.currentTimer);
+      const displayTime = getTimerDisplay(this.currentTimer, this.workMode);
       this.tray.setTitle(displayTime);
 
-      if (this.currentTimer <= 0) {
+      if (this.currentTimer < 0) {
         this.resetTimer();
         return this.player.stop();
       }
@@ -38,7 +38,7 @@ class Timer {
       this.workMode = !this.workMode;
     }
 
-    this.tray.setTitle(getTimerDisplay(this.currentTimer));
+    this.tray.setTitle(getTimerDisplay(this.currentTimer, this.workMode));
     this.intervalId = null;
   }
 }

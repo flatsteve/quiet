@@ -32,14 +32,15 @@ const getIconsByTheme = () => {
   }
 };
 
-const getTimerDisplay = (currentTimer) => {
+const getTimerDisplay = (currentTimer, workMode) => {
+  const icon = workMode ? "👨‍💻" : "🧘‍♀️";
   let minutes = parseInt(currentTimer / 60, 10);
   let seconds = parseInt(currentTimer % 60, 10);
 
   minutes = minutes < 10 ? `0${minutes}` : minutes;
   seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-  return ` ${minutes}:${seconds} `;
+  return `${icon} ${minutes}:${seconds} `;
 };
 
 const showErrorDialog = ({
