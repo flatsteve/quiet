@@ -1,8 +1,8 @@
 const {
   app,
   globalShortcut,
-  systemPreferences,
   nativeImage,
+  nativeTheme,
   Menu,
   Tray
 } = require("electron");
@@ -20,17 +20,12 @@ const ContextMenu = require("./ContextMenu");
 let player, contextMenu, menuTemplate;
 
 app.on("ready", () => {
-  const tray = new Tray(nativeImage.createEmpty());
-  const timer = new Timer(tray);
-  player = new Player(tray);
-
-  (function buildMenu() {
+  function buildMenu(tray) {
     contextMenu = new ContextMenu();
     menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
     tray.setContextMenu(menuTemplate);
-  })();
+  }
 
-  // EVENTS //
   function handleStop({ shouldReset }) {
     timer.resetTimer(shouldReset);
     player.stop();
@@ -43,9 +38,15 @@ app.on("ready", () => {
     contextMenu.toggleStartStop(menuTemplate);
   }
 
+  const tray = new Tray(nativeImage.createEmpty());
+  const timer = new Timer(tray);
+  player = new Player(tray);
+  buildMenu(tray);
+
   contextMenu.on("play", handlePlay);
   contextMenu.on("stop", handleStop);
   timer.on("stop", handleStop);
+  nativeTheme.on("updated", () => buildMenu(tray));
   // EVENTS //
 
   checkForUpdates();
@@ -61,13 +62,8 @@ app.on("ready", () => {
     }
 
     timer.resetTimer({ shouldReset: true });
-    player.handleDroppedTrack(droppedTrack);
+    player.handleDroppedTrack(track);
   });
-
-  systemPreferences.subscribeNotification(
-    "AppleInterfaceThemeChangedNotification",
-    () => player.handleThemeChange()
-  );
 });
 
 app.on("will-quit", () => {

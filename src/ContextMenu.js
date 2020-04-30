@@ -10,6 +10,7 @@ class ContextMenu extends EventEmitter {
     const { playIcon, stopIcon, updateIcon } = getIconsByTheme();
     this.menu = [
       {
+        id: "start",
         label: " Start",
         enabled: true,
         icon: playIcon,
@@ -18,6 +19,7 @@ class ContextMenu extends EventEmitter {
         }
       },
       {
+        id: "stop",
         label: " Stop",
         enabled: false,
         icon: stopIcon,
@@ -26,6 +28,7 @@ class ContextMenu extends EventEmitter {
         }
       },
       {
+        id: "update",
         label: " Update",
         enabled: false,
         icon: updateIcon,
@@ -43,12 +46,15 @@ class ContextMenu extends EventEmitter {
   }
 
   toggleStartStop(menu) {
-    menu.items[0].enabled = !menu.items[0].enabled;
-    menu.items[1].enabled = !menu.items[1].enabled;
+    const start = menu.getMenuItemById("start");
+    const stop = menu.getMenuItemById("stop");
+
+    start.enabled = !start.enabled;
+    stop.enabled = !stop.enabled;
   }
 
   setUpdateAvailable(menu) {
-    menu.items[2].enabled = true;
+    menu.getMenuItemById("update").enabled = true;
   }
 }
 
