@@ -2,9 +2,7 @@ const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const isDev = require("electron-is-dev");
 
-const { showNotification } = require("./notifications");
-
-const checkForUpdates = (player) => {
+const checkForUpdates = () => {
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = "info";
 
@@ -16,11 +14,7 @@ const checkForUpdates = (player) => {
     });
 
     autoUpdater.on("update-downloaded", () => {
-      // TODO
-      showNotification({
-        title: "Update available",
-        body: "Do something smart here",
-      });
+      // TODO emit event to inform menu update is available
     });
   }
 };
@@ -31,5 +25,5 @@ const installUpdateAndRestart = () => {
 
 module.exports = {
   checkForUpdates,
-  installUpdateAndRestart,
+  installUpdateAndRestart
 };

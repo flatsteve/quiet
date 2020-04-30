@@ -2,17 +2,14 @@ const {
   app,
   globalShortcut,
   systemPreferences,
+  nativeImage,
   Menu,
-  Tray,
+  Tray
 } = require("electron");
 const log = require("electron-log");
 
 const { checkForUpdates } = require("./updater");
-const {
-  getIconsByTheme,
-  setProductionAppPreferences,
-  showErrorDialog,
-} = require("./utils");
+const { setProductionAppPreferences, showErrorDialog } = require("./utils");
 
 setProductionAppPreferences();
 
@@ -20,18 +17,18 @@ const Player = require("./Player");
 const Timer = require("./Timer");
 const ContextMenu = require("./ContextMenu");
 
-let player;
+let player, contextMenu, menuTemplate;
 
 app.on("ready", () => {
-  const { playIcon } = getIconsByTheme();
-
-  const tray = new Tray(playIcon);
+  const tray = new Tray(nativeImage.createEmpty());
   const timer = new Timer(tray);
   player = new Player(tray);
 
-  const contextMenu = new ContextMenu();
-  const menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
-  tray.setContextMenu(menuTemplate);
+  (function buildMenu() {
+    contextMenu = new ContextMenu();
+    menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
+    tray.setContextMenu(menuTemplate);
+  })();
 
   // EVENTS //
   function handleStop({ shouldReset }) {

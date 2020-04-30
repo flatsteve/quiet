@@ -1,12 +1,7 @@
 const log = require("electron-log");
 const playSound = require("play-sound")();
 
-const {
-  getIconsByTheme,
-  getTrackName,
-  joinPath,
-  showErrorDialog,
-} = require("./utils");
+const { getTrackName, joinPath, showErrorDialog } = require("./utils");
 const { showNotification } = require("./notifications");
 
 class Player {
@@ -25,29 +20,7 @@ class Player {
     this.audioProcess = null;
     this.shouldPlayAgain = true;
     this.showNotification = true;
-
-    this.icons = getIconsByTheme();
     this.updateAvailable = false;
-  }
-
-  setUpdateAvailable() {
-    this.updateAvailable = true;
-    this.tray.setImage(this.icons.updateIcon);
-  }
-
-  handleThemeChange() {
-    this.icons = getIconsByTheme();
-    const { playIcon, stopIcon, updateIcon } = this.icons;
-
-    if (this.updateAvailable) {
-      return this.tray.setImage(updateIcon);
-    }
-
-    if (this.isPlaying) {
-      return this.tray.setImage(stopIcon);
-    }
-
-    this.tray.setImage(playIcon);
   }
 
   handleDroppedTrack(droppedTrack) {
@@ -68,7 +41,7 @@ class Player {
         return showErrorDialog({
           message: "Error playing track",
           detail:
-            "Sorry, something went wrong. Check the track hasn't moved or been deleted.",
+            "Sorry, something went wrong. Check the track hasn't moved or been deleted."
         });
       }
 
@@ -81,12 +54,11 @@ class Player {
 
     this.isPlaying = true;
     this.shouldPlayAgain = true;
-    this.tray.setImage(this.icons.stopIcon);
 
     if (this.showNotification) {
       showNotification({
         title: "Now playing",
-        body: getTrackName(this.track),
+        body: getTrackName(this.track)
       });
     }
 
@@ -108,7 +80,6 @@ class Player {
 
     this.isPlaying = false;
     this.showNotification = true;
-    this.tray.setImage(this.icons.playIcon);
   }
 }
 
