@@ -5,7 +5,7 @@
 - Quiet loops a gentle background noise track by default
 - Once installed Quiet launches on startup
 
-![](https://user-images.githubusercontent.com/1211440/51765574-0cb53780-20d0-11e9-84ec-5bdfdb88d59a.png)
+![](https://user-images.githubusercontent.com/1211440/80664282-5e333b80-8a64-11ea-9af6-28d6aac8692d.png)
 
 ### Future plans
 
