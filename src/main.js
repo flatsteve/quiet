@@ -9,7 +9,7 @@ const {
 const log = require("electron-log");
 
 const { checkForUpdates } = require("./updater");
-const { setProductionAppPreferences, showErrorDialog } = require("./utils");
+const { setProductionAppPreferences } = require("./utils");
 
 setProductionAppPreferences();
 
@@ -50,20 +50,6 @@ app.on("ready", () => {
   // EVENTS //
 
   checkForUpdates();
-
-  tray.on("drop-files", (e, files) => {
-    const track = files[0];
-    const trackExtension = track.split(".").pop();
-
-    log.info("Track:", track, "Extension:", trackExtension);
-
-    if (trackExtension !== "mp3") {
-      return showErrorDialog({ detail: "I only play .mp3's for now." });
-    }
-
-    timer.resetTimer({ shouldReset: true });
-    player.handleDroppedTrack(track);
-  });
 });
 
 app.on("will-quit", () => {

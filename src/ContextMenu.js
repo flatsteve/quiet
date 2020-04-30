@@ -37,6 +37,13 @@ class ContextMenu extends EventEmitter {
         }
       },
       { type: "separator" },
+      {
+        id: "settings",
+        label: "Settings",
+        click: () => {
+          this.emit("showSettings");
+        }
+      },
       { label: "Quit", role: "quit" }
     ];
   }

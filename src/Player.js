@@ -7,13 +7,6 @@ const { showNotification } = require("./notifications");
 class Player {
   constructor(tray) {
     this.tray = tray;
-
-    // extraResource = Weird asar packaging thing. Files within an asar archive have restrictions.
-    // It seems because we spawn a node child_process for tracks we have to un-package them (via extraResource)
-    // essentially removing them from the asar archive and lifting them into the Resources directory -
-    // thus freeing them from the restriction of archive files
-    // https://github.com/electron-userland/electron-builder/issues/751
-    // https://electronjs.org/docs/tutorial/application-packaging
     this.track = joinPath("../assets/noises/buzz.mp3", { extraResource: true });
 
     this.isPlaying = false;
@@ -21,16 +14,6 @@ class Player {
     this.shouldPlayAgain = true;
     this.showNotification = true;
     this.updateAvailable = false;
-  }
-
-  handleDroppedTrack(droppedTrack) {
-    this.track = droppedTrack;
-
-    if (this.isPlaying) {
-      return this.stop({ skipToNewTrack: true });
-    }
-
-    this.play();
   }
 
   play() {
@@ -65,19 +48,12 @@ class Player {
     this.showNotification = false;
   }
 
-  stop({ skipToNewTrack } = {}) {
-    // If skipToNewTrack is past kill the current process and start a new one using the dropped track
-    // If not kill the process and do not start a new track (see play() callback)
-    if (skipToNewTrack) {
-      this.shouldPlayAgain = true;
-    } else {
-      this.shouldPlayAgain = false;
-    }
-
+  stop() {
     if (this.audioProcess) {
       this.audioProcess.kill();
     }
 
+    this.shouldPlayAgain = false;
     this.isPlaying = false;
     this.showNotification = true;
   }
