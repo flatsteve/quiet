@@ -8,6 +8,7 @@ const {
 } = require("electron");
 const log = require("electron-log");
 
+const { showNotification } = require("./notifications");
 const { checkForUpdates } = require("./updater");
 const { setProductionAppPreferences } = require("./utils");
 
@@ -32,10 +33,26 @@ app.on("ready", () => {
     contextMenu.toggleStartStop(menuTemplate);
   }
 
+  function handleBreak() {
+    player.stop();
+    timer.resetTimer();
+    timer.start();
+
+    showNotification({
+      title: "Break Time 🧘‍♀️",
+      body: "Do something fun."
+    });
+  }
+
   function handlePlay() {
     timer.start();
     player.play();
     contextMenu.toggleStartStop(menuTemplate);
+
+    showNotification({
+      title: "Time to Work 👨‍💻",
+      body: "Eat that frog."
+    });
   }
 
   const tray = new Tray(nativeImage.createEmpty());
@@ -46,14 +63,14 @@ app.on("ready", () => {
   contextMenu.on("play", handlePlay);
   contextMenu.on("stop", handleStop);
   timer.on("stop", handleStop);
+  timer.on("break", handleBreak);
   nativeTheme.on("updated", () => buildMenu(tray));
-  // EVENTS //
 
   checkForUpdates();
 });
 
 app.on("will-quit", () => {
-  log.info("EXIT APP");
+  log.info("EXITING APP");
 
   player.stop();
   globalShortcut.unregisterAll();

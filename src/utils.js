@@ -12,10 +12,6 @@ const joinPath = (relativePath, { extraResource = false } = {}) => {
   return path.join(__dirname, relativePath);
 };
 
-const getTrackName = (trackPath) => {
-  return trackPath.split("/").pop();
-};
-
 const getIconsByTheme = () => {
   if (nativeTheme.shouldUseDarkColors) {
     return {
@@ -71,7 +67,6 @@ const TIMES = {
 module.exports = {
   TIMES,
   joinPath,
-  getTrackName,
   getTimerDisplay,
   getIconsByTheme,
   showErrorDialog,

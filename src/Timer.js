@@ -25,6 +25,10 @@ class Timer extends EventEmitter {
       this.tray.setTitle(displayTime);
 
       if (this.currentTimer < 0) {
+        if (this.workMode) {
+          return this.emit("break");
+        }
+
         return this.emit("stop", { shouldReset: false });
       }
     }, TIMES.ONE_SEC);

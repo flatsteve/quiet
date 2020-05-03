@@ -1,8 +1,7 @@
 const log = require("electron-log");
 const playSound = require("play-sound")();
 
-const { getTrackName, joinPath, showErrorDialog } = require("./utils");
-const { showNotification } = require("./notifications");
+const { joinPath, showErrorDialog } = require("./utils");
 
 class Player {
   constructor(tray) {
@@ -12,7 +11,6 @@ class Player {
     this.isPlaying = false;
     this.audioProcess = null;
     this.shouldPlayAgain = true;
-    this.showNotification = true;
     this.updateAvailable = false;
   }
 
@@ -37,15 +35,6 @@ class Player {
 
     this.isPlaying = true;
     this.shouldPlayAgain = true;
-
-    if (this.showNotification) {
-      showNotification({
-        title: "Now playing",
-        body: getTrackName(this.track)
-      });
-    }
-
-    this.showNotification = false;
   }
 
   stop() {
@@ -55,7 +44,6 @@ class Player {
 
     this.shouldPlayAgain = false;
     this.isPlaying = false;
-    this.showNotification = true;
   }
 }
 
