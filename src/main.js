@@ -40,7 +40,7 @@ app.on("ready", () => {
 
     showNotification({
       title: "Break Time 🧘‍♀️",
-      body: "Do something fun."
+      body: "10 push ups then chill."
     });
   }
 
@@ -51,7 +51,7 @@ app.on("ready", () => {
 
     showNotification({
       title: "Time to Work 👨‍💻",
-      body: "Eat that frog."
+      body: "Get it done. It'll feel good later."
     });
   }
 
