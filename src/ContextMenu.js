@@ -1,10 +1,11 @@
 const EventEmitter = require("events");
+const settings = require("electron-settings");
 
 const { getIconsByTheme } = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
 
 class ContextMenu extends EventEmitter {
-  constructor() {
+  constructor(userSettings) {
     super();
 
     const { playIcon, stopIcon, updateIcon } = getIconsByTheme();
@@ -38,12 +39,15 @@ class ContextMenu extends EventEmitter {
       },
       { type: "separator" },
       {
-        id: "settings",
-        label: "Settings",
+        id: "sound",
+        label: "Play Sound",
+        type: "checkbox",
+        checked: userSettings.playSound,
         click: () => {
-          this.emit("showSettings");
+          settings.set("playSound", !userSettings.playSound);
         }
       },
+      { type: "separator" },
       { label: "Quit", role: "quit" }
     ];
   }

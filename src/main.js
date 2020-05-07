@@ -7,10 +7,11 @@ const {
   Tray
 } = require("electron");
 const log = require("electron-log");
+const settings = require("electron-settings");
 
 const { showNotification } = require("./notifications");
 const { checkForUpdates } = require("./updater");
-const { setProductionAppPreferences } = require("./utils");
+const { setProductionAppPreferences, loadSettings } = require("./utils");
 
 setProductionAppPreferences();
 
@@ -21,32 +22,21 @@ const ContextMenu = require("./ContextMenu");
 let player, contextMenu, menuTemplate;
 
 app.on("ready", () => {
-  function buildMenu(tray) {
-    contextMenu = new ContextMenu();
+  const userSettings = loadSettings();
+
+  function buildMenu(tray, userSettings) {
+    contextMenu = new ContextMenu(userSettings);
     menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
     tray.setContextMenu(menuTemplate);
   }
 
-  function handleStop({ shouldReset }) {
-    timer.resetTimer(shouldReset);
-    player.stop();
-    contextMenu.toggleStartStop(menuTemplate);
-  }
-
-  function handleBreak() {
-    player.stop();
-    timer.resetTimer();
-    timer.start();
-
-    showNotification({
-      title: "Break Time 🧘‍♀️",
-      body: "10 push ups then chill."
-    });
-  }
-
   function handlePlay() {
+    if (settings.get("playSound")) {
+      player.play();
+    }
+
     timer.start();
-    player.play();
+
     contextMenu.toggleStartStop(menuTemplate);
 
     showNotification({
@@ -55,10 +45,33 @@ app.on("ready", () => {
     });
   }
 
+  function handleStop({ shouldReset }) {
+    if (settings.get("playSound")) {
+      player.stop();
+    }
+
+    timer.resetTimer(shouldReset);
+    contextMenu.toggleStartStop(menuTemplate);
+  }
+
+  function handleBreak() {
+    if (settings.get("playSound")) {
+      player.stop();
+    }
+
+    timer.resetTimer();
+    timer.start();
+
+    showNotification({
+      title: "Break Time 🧘‍♀️",
+      body: "15 pushups then chill."
+    });
+  }
+
   const tray = new Tray(nativeImage.createEmpty());
   const timer = new Timer(tray);
   player = new Player(tray);
-  buildMenu(tray);
+  buildMenu(tray, userSettings);
 
   contextMenu.on("play", handlePlay);
   contextMenu.on("stop", handleStop);
