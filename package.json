@@ -25,18 +25,18 @@
     "extraResources": "assets/noises/*.mp3"
   },
   "devDependencies": {
-    "electron": "^8.2.4",
-    "electron-builder": "^22.5.1",
-    "eslint": "^6.8.0",
+    "electron": "^9.0.4",
+    "electron-builder": "^22.7.0",
+    "eslint": "^7.2.0",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
     "electron-is-dev": "^1.2.0",
-    "electron-log": "^4.1.1",
+    "electron-log": "^4.2.2",
     "electron-settings": "^3.2.0",
     "electron-updater": "^4.3.1",
     "play-sound": "^1.1.3"

@@ -1,18 +1,6 @@
 const { app, dialog, nativeTheme } = require("electron");
-const settings = require("electron-settings");
 const path = require("path");
 const isDev = require("electron-is-dev");
-
-const loadSettings = () => {
-  // Default play sound to true
-  if (!settings.has("playSound")) {
-    settings.set("playSound", true);
-  }
-
-  return {
-    playSound: settings.get("playSound")
-  };
-};
 
 const joinPath = (relativePath, { extraResource = false } = {}) => {
   // Prod: assets is in the same directory (as Resources) so remove the ../
@@ -78,7 +66,6 @@ const TIMES = {
 
 module.exports = {
   TIMES,
-  loadSettings,
   joinPath,
   getTimerDisplay,
   getIconsByTheme,

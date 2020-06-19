@@ -5,7 +5,7 @@ const { getIconsByTheme } = require("./utils");
 const { installUpdateAndRestart } = require("./updater");
 
 class ContextMenu extends EventEmitter {
-  constructor(userSettings) {
+  constructor() {
     super();
 
     const { playIcon, stopIcon, updateIcon } = getIconsByTheme();
@@ -42,9 +42,9 @@ class ContextMenu extends EventEmitter {
         id: "sound",
         label: "Play Sound",
         type: "checkbox",
-        checked: userSettings.playSound,
+        checked: settings.has("playSound") ? settings.get("playSound") : true,
         click: () => {
-          settings.set("playSound", !userSettings.playSound);
+          settings.set("playSound", !settings.get("playSound"));
         }
       },
       { type: "separator" },

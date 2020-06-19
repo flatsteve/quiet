@@ -6,12 +6,11 @@ const {
   Menu,
   Tray
 } = require("electron");
-const log = require("electron-log");
 const settings = require("electron-settings");
 
 const { showNotification } = require("./notifications");
 const { checkForUpdates } = require("./updater");
-const { setProductionAppPreferences, loadSettings } = require("./utils");
+const { setProductionAppPreferences } = require("./utils");
 
 setProductionAppPreferences();
 
@@ -22,10 +21,8 @@ const ContextMenu = require("./ContextMenu");
 let player, contextMenu, menuTemplate;
 
 app.on("ready", () => {
-  const userSettings = loadSettings();
-
-  function buildMenu(tray, userSettings) {
-    contextMenu = new ContextMenu(userSettings);
+  function buildMenu(tray) {
+    contextMenu = new ContextMenu();
     menuTemplate = Menu.buildFromTemplate(contextMenu.menuItems);
     tray.setContextMenu(menuTemplate);
   }
@@ -71,7 +68,7 @@ app.on("ready", () => {
   const tray = new Tray(nativeImage.createEmpty());
   const timer = new Timer(tray);
   player = new Player(tray);
-  buildMenu(tray, userSettings);
+  buildMenu(tray);
 
   contextMenu.on("play", handlePlay);
   contextMenu.on("stop", handleStop);
@@ -83,8 +80,6 @@ app.on("ready", () => {
 });
 
 app.on("will-quit", () => {
-  log.info("EXITING APP");
-
   player.stop();
   globalShortcut.unregisterAll();
 });
